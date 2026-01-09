@@ -27,7 +27,7 @@ export function SandboxState() {
           </DialogDescription>
         </DialogHeader>
         <DialogContent>
-          Sandbox max. duration for this demo has been reached
+          Sandbox max. duration for this has been reached
           <Button onClick={() => window.location.reload()}>
             Start a new session
           </Button>
