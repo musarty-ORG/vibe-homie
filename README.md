@@ -1,5 +1,15 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Features
+
+### Phase 1 UX Overhaul (Completed)
+
+- **PromptInput Component**: Modern multiline input with auto-grow, attachments support, and stop/cancel functionality
+- **Admin Mode**: Hidden sandbox panels by default with `?admin=1` query parameter + `ADMIN_MODE_ENABLED=true` environment variable gate
+- **Embed Route**: Full-bleed `/embed` route for iframe embedding with minimal chrome
+- **Preview/Code Tabs**: Tabbed interface showing preview and generated code with syntax highlighting
+- **Security Improvements**: Sanitized file paths and structured logging in download route
+
 ## Getting Started
 
 First, run the development server:
@@ -16,9 +26,43 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Copy `.env.example` to `.env.local` and configure as needed:
+
+```bash
+cp .env.example .env.local
+```
+
+- `ADMIN_MODE_ENABLED`: Set to `true` to enable admin mode (shows sandbox panels when `?admin=1` is in URL)
+
+## Routes
+
+- `/` - Main application interface
+- `/embed` - Embed-friendly full-bleed layout (no header, optimized for iframes)
+
+## Features
+
+### PromptInput
+
+- Multiline auto-growing text input
+- Enter to submit, Shift+Enter for new line
+- Image attachment support
+- Stop/Cancel button for streaming responses
+- Model selector and settings integration
+
+### Admin Mode
+
+By default, the Sandbox Remote Filesystem and Sandbox Remote Output panels are hidden. To enable them:
+
+1. Set `ADMIN_MODE_ENABLED=true` in your environment
+2. Add `?admin=1` to the URL
+
+Both conditions must be met for admin mode to activate.
+
+### Download Functionality
+
+Generated files can be downloaded as a ZIP from the download button in the header (appears when files are generated).
 
 ## Learn More
 

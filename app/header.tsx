@@ -1,3 +1,4 @@
+import { DownloadButton } from '@/components/download-button'
 import { ToggleWelcome } from '@/components/modals/welcome'
 import { VercelDashed } from '@/components/icons/vercel-dashed'
 import { cn } from '@/lib/utils'
@@ -16,6 +17,7 @@ export async function Header({ className }: Props) {
         </span>
       </div>
       <div className="flex items-center ml-auto space-x-1.5">
+        <DownloadButton />
         <ToggleWelcome />
       </div>
     </header>
