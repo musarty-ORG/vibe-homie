@@ -1,6 +1,5 @@
 import { Chat } from './chat'
 import { FileExplorer } from './file-explorer'
-import { FloatingDownloadButton } from '@/components/FloatingDownloadButton'
 import { Header } from './header'
 import { Horizontal, Vertical } from '@/components/layout/panels'
 import { Logs } from './logs'
@@ -60,7 +59,6 @@ export default async function Page() {
           />
         </div>
       </div>
-      <FloatingDownloadButton />
     </>
   )
 }

@@ -2,17 +2,16 @@
 
 import type { ChatUIMessage } from '@/components/chat/types'
 import { TEST_PROMPTS } from '@/ai/constants'
-import { MessageCircleIcon, SendIcon } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { MessageCircleIcon } from 'lucide-react'
 import {
   Conversation,
   ConversationContent,
   ConversationScrollButton,
 } from '@/components/ai-elements/conversation'
-import { Input } from '@/components/ui/input'
 import { Message } from '@/components/chat/message'
 import { ModelSelector } from '@/components/settings/model-selector'
 import { Panel, PanelHeader } from '@/components/panels/panels'
+import { PromptInput, type PromptInputAttachment } from '@/components/ui/prompt-input'
 import { Settings } from '@/components/settings/settings'
 import { useChat } from '@ai-sdk/react'
 import { useLocalStorageValue } from '@/lib/use-local-storage-value'
@@ -30,17 +29,32 @@ export function Chat({ className }: Props) {
   const [input, setInput] = useLocalStorageValue('prompt-input')
   const { chat } = useSharedChatContext()
   const { modelId, reasoningEffort } = useSettings()
-  const { messages, sendMessage, status } = useChat<ChatUIMessage>({ chat })
+  const { messages, sendMessage, status, stop } = useChat<ChatUIMessage>({ chat })
   const { setChatStatus } = useSandboxStore()
 
-  const validateAndSubmitMessage = useCallback(
-    (text: string) => {
-      if (text.trim()) {
-        sendMessage({ text }, { body: { modelId, reasoningEffort } })
+  const handleSubmit = useCallback(
+    (text: string, attachments?: PromptInputAttachment[]) => {
+      if (text.trim() || attachments) {
+        sendMessage(
+          { 
+            text: text || '', 
+            files: attachments 
+          }, 
+          { body: { modelId, reasoningEffort } }
+        )
         setInput('')
       }
     },
     [sendMessage, modelId, setInput, reasoningEffort]
+  )
+
+  const validateAndSubmitMessage = useCallback(
+    (text: string) => {
+      if (text.trim()) {
+        handleSubmit(text)
+      }
+    },
+    [handleSubmit]
   )
 
   useEffect(() => {
@@ -88,26 +102,16 @@ export function Chat({ className }: Props) {
         </Conversation>
       )}
 
-      <form
-        className="flex items-center p-2 space-x-1 border-t border-primary/18 bg-background"
-        onSubmit={async (event) => {
-          event.preventDefault()
-          validateAndSubmitMessage(input)
-        }}
-      >
-        <Settings />
-        <ModelSelector />
-        <Input
-          className="w-full font-mono text-sm rounded-sm border-0 bg-background"
-          disabled={status === 'streaming' || status === 'submitted'}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Type your message..."
-          value={input}
-        />
-        <Button type="submit" disabled={status !== 'ready' || !input.trim()}>
-        <SendIcon className="w-4 h-4" />
-        </Button>
-      </form>
+      <PromptInput
+        value={input}
+        onChange={setInput}
+        onSubmit={handleSubmit}
+        status={status}
+        onStop={stop}
+        placeholder="Type your message..."
+        showSettings={<Settings />}
+        showModelSelector={<ModelSelector />}
+      />
     </Panel>
   )
 }
